@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.2] - 2026-07-05
+
+### Added
+
+- Added the hidden `name` field to the Homebridge config schema with the default platform name.
+
+### Changed
+
+- Upgraded alexa-cookie2 to version 5.0.4.
+- Upgraded alexa-remote2 to version 8.0.5.
+
+### Fixed
+
+- Fixed token refresh failures when saved Alexa authentication data uses a different Amazon marketplace than the configured domain.
+
 ## [2.5.1] - 2026-05-26
 
 ### Changed

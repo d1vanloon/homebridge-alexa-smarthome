@@ -310,8 +310,10 @@ export class AlexaSmartHomePlatform implements DynamicPlatformPlugin {
       A.reduce(new Map<string, string[]>(), (map, [name, ops]) => {
         map.set(
           name,
-          ops?.split(',').map((o) => o.trim()).filter((o) => o.length > 0) ??
-            [],
+          ops
+            ?.split(',')
+            .map((o) => o.trim())
+            .filter((o) => o.length > 0) ?? [],
         );
         return map;
       }),
