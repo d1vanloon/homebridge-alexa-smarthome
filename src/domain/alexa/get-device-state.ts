@@ -145,6 +145,24 @@ export const extractStates = (
               rangeName: _.configuration.friendlyName.value.text,
             } as CapabilityState),
         )
+        // REVIEW: ModeController state extraction — maps the GraphQL modeValue { value } subselection
+        // (from ModeQuery with `... on Mode { modeValue { value } }`) into a CapabilityState
+        // with string value and instance key. Required for fan speed/direction mode reads.
+        .with(
+          {
+            name: 'mode',
+            instance: Pattern.string,
+            properties: Pattern.array({
+              modeValue: { value: Pattern.string },
+            }),
+          },
+          (_) =>
+            O.of({
+              ...withCommonProps(_),
+              value: _.properties[0].modeValue.value,
+              instance: _.instance,
+            } as CapabilityState),
+        )
         .with(
           {
             name: 'thermostat',

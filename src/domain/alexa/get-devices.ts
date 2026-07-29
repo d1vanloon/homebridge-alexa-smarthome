@@ -122,6 +122,9 @@ export interface Endpoint {
       colorTemperatureInKelvinStateValue: Nullable<number>;
       lockState: Nullable<'LOCKED' | 'UNLOCKED' | 'JAMMED'>;
       thermostatModeValue: Nullable<'HEAT' | 'COOL' | 'AUTO' | 'ECO' | 'OFF'>;
+      // REVIEW: modeValue added to the Endpoint features properties type for Alexa.ModeController
+      // GraphQL query responses. Analogous to thermostatModeValue; carries { value: string }.
+      modeValue: Nullable<{ value: string }>;
     }>;
     configuration: Nullable<{
       friendlyName: {

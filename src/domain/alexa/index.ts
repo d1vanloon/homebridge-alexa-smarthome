@@ -72,6 +72,8 @@ export const SupportedActions = {
   setTargetSetpoint: 'setTargetSetpoint',
   adjustTargetSetpoint: 'adjustTargetSetpoint',
   setThermostatMode: 'setThermostatMode',
+  setMode: 'setMode',
+  setRangeValue: 'setRangeValue',
 } as const;
 
 export type SupportedActionsType = keyof typeof SupportedActions;
@@ -81,11 +83,11 @@ export const SupportedFeatures = {
   color: 'color',
   colorTemperature: 'colorTemperature',
   lock: 'lock',
+  mode: 'mode',
   power: 'power',
   range: 'range',
   temperatureSensor: 'temperatureSensor',
   thermostat: 'thermostat',
-  toggle: 'toggle',
 } as const;
 
 export type SupportedFeatures = keyof typeof SupportedFeatures;

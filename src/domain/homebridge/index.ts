@@ -24,8 +24,13 @@ export interface AlexaPlatformConfig extends PlatformConfig {
   };
   performance: Nullable<{
     cacheTTL: Nullable<number>;
+    // REVIEW: backgroundRefresh added to the performance config to allow disabling periodic
+    // device state polling from the Alexa cloud (e.g. for low-traffic dev instances).
+    backgroundRefresh: Nullable<boolean>;
   }>;
-  disabledOperations: Nullable<
+  // REVIEW: disabledOperations changed from required to optional (`?:`) — it was previously
+  // declared without `?`, requiring every platform config to include an empty or null entry.
+  disabledOperations?: Nullable<
     Array<{
       deviceName: string;
       operations: Nullable<string>;

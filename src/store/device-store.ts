@@ -15,6 +15,7 @@ import {
 } from '../domain/alexa/save-device-capabilities';
 import { AlexaPlatformConfig } from '../domain/homebridge';
 import { getOrElseNullable } from '../util/fp-util';
+import { emptyFanControls, FanControls } from '../domain/alexa/fan-controls';
 
 export interface DeviceStatesCache {
   lastUpdated: Date;
@@ -29,6 +30,7 @@ export default class DeviceStore {
   };
 
   private _deviceCapabilities: RangeFeaturesByDevice = {};
+  private _fanControlsByDevice: Record<string, FanControls> = {};
 
   constructor(performanceSettings?: AlexaPlatformConfig['performance']) {
     const cacheTTL = getOrElseNullable(
@@ -44,6 +46,18 @@ export default class DeviceStore {
 
   set deviceCapabilities(deviceCapabilities: RangeFeaturesByDevice) {
     this._deviceCapabilities = deviceCapabilities;
+  }
+
+  get fanControlsByDevice(): Record<string, FanControls> {
+    return RR.toRecord(this._fanControlsByDevice);
+  }
+
+  set fanControlsByDevice(controls: Record<string, FanControls>) {
+    this._fanControlsByDevice = controls;
+  }
+
+  getFanControlsForDevice(deviceId: string): FanControls {
+    return this._fanControlsByDevice[deviceId] ?? emptyFanControls;
   }
 
   getRangeFeaturesForDevice(deviceId: string): RangeFeatures {
@@ -115,6 +129,29 @@ export default class DeviceStore {
         return O.of(cs);
       }),
     );
+    return this.cache.states;
+  }
+
+  // REVIEW: upsertCacheValue — unlike updateCacheValue (which only updates existing cache entries),
+  // this method inserts OR updates a CapabilityState for a given (deviceId, featureName, instance, name)
+  // tuple. Required for fan control SET operations where a mode/range state may not yet exist in cache.
+  upsertCacheValue(
+    deviceId: string,
+    newState: CapabilityState,
+  ): ValidStatesByDevice {
+    const states = this.getCacheStatesForDevice(deviceId);
+    const matchIndex = states.findIndex(
+      (cs) =>
+        cs.featureName === newState.featureName &&
+        (cs.instance ?? null) === (newState.instance ?? null) &&
+        (cs.name ?? null) === (newState.name ?? null),
+    );
+    if (matchIndex >= 0) {
+      states[matchIndex] = newState;
+    } else {
+      states.push(newState);
+    }
+    this.cache.states[deviceId] = states.map((s) => O.of(s));
     return this.cache.states;
   }
 
